@@ -7,111 +7,83 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { Platform } from 'react-native';
+import { extendTheme, NativeBaseProvider, v3CompatibleTheme } from 'native-base';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import store from './src/redux/store';
+import AppNavigator from './src/navigation';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+const App = () => {
+  const theme = {
+    colors: {
+      primary: '#00A89C',
+      text: '#231A00BD',
+      backdrop: '#0005',
+      disabled: '#aaa5',
+      accent: '#DCDCDC',
+      background: '#fff',
+      placeholder: '#231A008A'
+    }
   };
+  const themeNativeBase = extendTheme(v3CompatibleTheme, {
+    components: {
+      Image: { defaultProps: { alt: 'no image' } },
+      ScrollView: { defaultProps: { keyboardShouldPersistTaps: 'handled' } },
+      Stack: { baseStyle: { overflow: Platform.OS == 'ios' ? 'visible' : 'hidden' } },
+      KeyboardAvoidingView: { defaultProps: { behavior: Platform.OS === 'ios' ? 'padding' : 'height' } },
+      Button: {
+        baseStyle: {
+          size: 'full',
+          rounded: 5,
+          _text: { color: '#fff' },
+          _spinner: { color: '#fff' }
+        },
+        defaultProps: {
+          bgColor: '#00A89C'
+        }
+      },
+      Pressable: {
+        baseStyle: {
+          borderless: false,
+          android_ripple: { color: theme.colors.disabled }
+        }
+      },
+      Checkbox: {
+        defaultProps: {
+          rounded: '5'
+        }
+      },
+      Text: { defaultProps: { color: '#231A00BD' } }
+    },
+    fontConfig: {
+      RobotoSlab: {
+        400: {
+          normal: 'RobotoSlab-Regular'
+        },
+        700: {
+          normal: 'RobotoSlab-Bold'
+        }
+      }
+    },
 
+    fonts: {
+      // heading: 'RobotoSlab',
+      // body: 'RobotoSlab'
+    }
+  });
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Provider store={store}>
+      <NativeBaseProvider theme={themeNativeBase}>
+        <AppNavigator />
+      </NativeBaseProvider>
+      <App />
+    </Provider>
   );
 };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+
 
 export default App;
