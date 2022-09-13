@@ -58,16 +58,16 @@ const App = () => {
       },
       Text: { defaultProps: { color: '#231A00BD' } }
     },
-    fontConfig: {
-      RobotoSlab: {
-        400: {
-          normal: 'RobotoSlab-Regular'
-        },
-        700: {
-          normal: 'RobotoSlab-Bold'
-        }
-      }
-    },
+    // fontConfig: {
+    //   RobotoSlab: {
+    //     400: {
+    //       normal: 'RobotoSlab-Regular'
+    //     },
+    //     700: {
+    //       normal: 'RobotoSlab-Bold'
+    //     }
+    //   }
+    // },
 
     fonts: {
       // heading: 'RobotoSlab',
