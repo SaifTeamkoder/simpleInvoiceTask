@@ -1,4 +1,4 @@
-import { createNavigationContainerRef } from '@react-navigation/native';
+import {createNavigationContainerRef} from '@react-navigation/native';
 
 export const navigationRef = createNavigationContainerRef();
 
@@ -17,4 +17,3 @@ export function reset(props, params) {
     navigationRef.reset(props, params);
   }
 }
-// add other navigation functions that you need and export them

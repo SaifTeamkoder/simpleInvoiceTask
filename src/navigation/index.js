@@ -1,16 +1,13 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
-// import splash from '../screens/auth/splash';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+import SignIn from '../screens/auth/signIn';
 
 // auth
 
-
 // index
 
-
-
-import { navigationRef } from './rootNavigation';
+import {navigationRef} from './rootNavigation';
 
 const Stack = createStackNavigator();
 
@@ -20,16 +17,15 @@ const screenOptions = {
   gestureEnabled: true,
   cardShadowEnabled: false,
   cardOverlayEnabled: false,
-  ...TransitionPresets.SlideFromRightIOS
+  ...TransitionPresets.SlideFromRightIOS,
 };
 
 function AppNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
-      <Stack.Navigator screenOptions={screenOptions} initialRouteName="splash">
+      <Stack.Navigator screenOptions={screenOptions} initialRouteName="SignIn">
         {/* <Stack.Screen name="splash" component={splash} /> */}
-    
-
+        <Stack.Screen name="SignIn" component={SignIn} />
       </Stack.Navigator>
     </NavigationContainer>
   );
