@@ -71,7 +71,7 @@ const InvoiceList = ({ navigation }) => {
     return (
       <Box flex="1" bgColor="#FFF" justifyContent={"center"}>
         <Text fontSize="16" textAlign="center" color={"#000"}>
-          NO DATA FOUND
+          {store.INVOICE_LIST_NEXT_PAGE_LOADER === true ? "LOADING DATA" : "NO DATA FOUND"}
         </Text>
       </Box>
     );
