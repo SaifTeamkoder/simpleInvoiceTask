@@ -3,7 +3,7 @@ import { Box, Text, HStack, Pressable, Modal, Button } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchInvoice } from "../../redux/action/invoice";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 import { Icons, InputText } from "../../components";
 
 const InvoiceList = ({ navigation }) => {
@@ -20,6 +20,8 @@ const InvoiceList = ({ navigation }) => {
   const [createdDate, setCreatedDate] = useState("CREATED_DATE");
   const [listOrder, setListOrder] = useState("ASCENDING");
   const [showModal, setShowModal] = useState(false);
+  const [searchInput, setSearchInput] = useState('')
+  const [data, setData] = useState(store.INVOICE_LIST_DATA);
 
   const listOrderFilter = [{ order: "ASCENDING" }, { order: "DESCENDING" }];
 
@@ -31,7 +33,41 @@ const InvoiceList = ({ navigation }) => {
     dispatch(fetchInvoice({ pageNo, invoiceDate, createdDate, listOrder }, navigation));
     setShowModal(false);
   }
-
+  const updateSearchInput = (input) => {
+    setSearchInput(input);
+    const searchInput = input.trim().toLowerCase();
+    const newSearchData = store.INVOICE_LIST_DATA.filter((item) => {
+      return (
+        (item.invoiceId !== null && item.invoiceId !== undefined) &&
+        item.invoiceId
+          .trim()
+          .toLowerCase()
+          .includes(searchInput) ||
+        (item.invoiceNumber !== null && item.invoiceNumber !== undefined) &&
+        item.invoiceNumber
+          .toString()
+          .trim()
+          .toLowerCase()
+          .includes(searchInput) ||
+        (item.firstName !== null && item.firstName !== undefined) &&
+        item.firstName
+          .trim()
+          .toLowerCase()
+          .includes(searchInput) ||
+        (item.totalAmount !== null && item.totalAmount !== undefined) &&
+        item.totalAmount
+          .toString()
+          .trim()
+          .toLowerCase()
+          .includes(searchInput)
+      );
+    });
+    if (searchInput === '') {
+      setData(store.INVOICE_LIST_DATA)
+    } else {
+      setData(newSearchData)
+    }
+  }
   const renderItem = ({ item, index }) => (
     <Pressable key={item.invoiceId} onPress={() => navigation.navigate("Invoice Details", { data: item })}>
       {({ isPressed }) => {
@@ -82,10 +118,17 @@ const InvoiceList = ({ navigation }) => {
       <Box w="90%" flex="1" alignSelf="center">
         <HStack marginTop="2" justifyContent="space-between">
           <Box w="80%">
-            <InputText placeholder="Search Invoice" />
+            <InputText placeholder="Search Invoice"
+              value={searchInput}
+              onChangeText={(text) => { updateSearchInput(text) }}
+            />
           </Box>
           <Pressable
-            onPress={() => setShowModal(true)}
+            onPress={() => {
+              setShowModal(true)
+            }
+
+            }
             borderRadius="5"
             borderWidth="1"
             p="2"
@@ -96,7 +139,7 @@ const InvoiceList = ({ navigation }) => {
         </HStack>
 
         <FlashList
-          data={store.INVOICE_LIST_DATA}
+          data={data}
           removeClippedSubviews
           ListFooterComponent={
             <Box marginBottom={200}>
@@ -112,7 +155,6 @@ const InvoiceList = ({ navigation }) => {
       </Box>
 
       {/* FILTER MODAL */}
-
       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />

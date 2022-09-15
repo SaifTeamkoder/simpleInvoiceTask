@@ -1,5 +1,5 @@
 import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 // auth
 import Splash from "../screens/auth";
 import SignIn from "../screens/auth/signIn";
@@ -11,10 +11,9 @@ import CreateInvoice from "../screens/home/createInvoice";
 // profile
 import Profile from "../screens/profile/";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const screenOptions = {
-  presentation: "modal",
   headerShown: false,
   gestureEnabled: true,
   cardShadowEnabled: false,
