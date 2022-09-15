@@ -1,59 +1,68 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {LogBox, StatusBar, Platform, Linking, Alert} from 'react-native';
-import {extendTheme, NativeBaseProvider, v3CompatibleTheme} from 'native-base';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {PersistGate} from 'redux-persist/integration/react';
-import {Provider} from 'react-redux';
-import {store, persistor} from './src/redux/store';
-import {rootNavigation} from './src/navigation/rootNavigation';
-import AppNavigator from './src/navigation';
+import React, { useEffect, useState, useRef } from "react";
+import { LogBox, StatusBar, Platform, Linking, Alert } from "react-native";
+import { extendTheme, NativeBaseProvider, v3CompatibleTheme } from "native-base";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { PersistGate } from "redux-persist/integration/react";
+import { Provider } from "react-redux";
+import { store, persistor } from "./src/redux/store";
+import { rootNavigation } from "./src/navigation/rootNavigation";
+import AppNavigator from "./src/navigation";
+
+LogBox.ignoreAllLogs();
+LogBox.ignoreLogs([
+  'Each child in a list should have a unique "key" prop.',
+  "If you do not provide children",
+  "[react-native-gesture-handler]",
+  "ViewPropTypes will be removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'",
+  "Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`",
+]);
 
 const App = () => {
   const theme = {
     colors: {
-      primary: '#00A89C',
-      text: '#231A00BD',
-      backdrop: '#0005',
-      disabled: '#aaa5',
-      accent: '#DCDCDC',
-      background: '#fff',
-      placeholder: '#231A008A',
+      primary: "#00A89C",
+      text: "#231A00BD",
+      backdrop: "#0005",
+      disabled: "#aaa5",
+      accent: "#DCDCDC",
+      background: "#fff",
+      placeholder: "#231A008A",
     },
   };
 
   const nativeBaseTheme = extendTheme(v3CompatibleTheme, {
     components: {
-      Image: {defaultProps: {alt: 'no image'}},
-      ScrollView: {defaultProps: {keyboardShouldPersistTaps: 'handled'}},
+      Image: { defaultProps: { alt: "no image" } },
+      ScrollView: { defaultProps: { keyboardShouldPersistTaps: "handled" } },
       Stack: {
-        baseStyle: {overflow: Platform.OS == 'ios' ? 'visible' : 'hidden'},
+        baseStyle: { overflow: Platform.OS == "ios" ? "visible" : "hidden" },
       },
       KeyboardAvoidingView: {
-        defaultProps: {behavior: Platform.OS === 'ios' ? 'padding' : 'height'},
+        defaultProps: { behavior: Platform.OS === "ios" ? "padding" : "height" },
       },
       Button: {
         baseStyle: {
-          size: 'full',
+          size: "full",
           rounded: 5,
-          _text: {color: '#fff'},
-          _spinner: {color: '#fff'},
+          _text: { color: "#fff" },
+          _spinner: { color: "#fff" },
         },
         defaultProps: {
-          bgColor: '#00A89C',
+          bgColor: "#00A89C",
         },
       },
       Pressable: {
         baseStyle: {
           borderless: false,
-          android_ripple: {color: theme.colors.disabled},
+          android_ripple: { color: theme.colors.disabled },
         },
       },
       Checkbox: {
         defaultProps: {
-          rounded: '5',
+          rounded: "5",
         },
       },
-      Text: {defaultProps: {color: '#231A00BD'}},
+      Text: { defaultProps: { color: "#231A00BD" } },
     },
     // fontConfig: {
     //   RobotoSlab: {
@@ -76,12 +85,7 @@ const App = () => {
       <PersistGate persistor={persistor}>
         <NavigationContainer ref={rootNavigation}>
           <NativeBaseProvider theme={nativeBaseTheme}>
-            <StatusBar
-              animated
-              translucent
-              barStyle="dark-content"
-              backgroundColor="transparent"
-            />
+            <StatusBar animated translucent barStyle="dark-content" backgroundColor="transparent" />
             <AppNavigator />
           </NativeBaseProvider>
         </NavigationContainer>

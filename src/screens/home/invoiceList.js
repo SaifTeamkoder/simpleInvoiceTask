@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Text, HStack, Pressable, Button } from "native-base";
+import { Box, Text, HStack, Pressable, Modal, Button } from "native-base";
 import { FlashList } from "@shopify/flash-list";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchInvoice } from "../../redux/action/invoice";
@@ -19,10 +19,18 @@ const InvoiceList = ({ navigation }) => {
   const [invoiceDate, setInvoiceDate] = useState("INVOICE_DATE");
   const [createdDate, setCreatedDate] = useState("CREATED_DATE");
   const [listOrder, setListOrder] = useState("ASCENDING");
+  const [showModal, setShowModal] = useState(false);
+
+  const listOrderFilter = [{ order: "ASCENDING" }, { order: "DESCENDING" }];
 
   useEffect(() => {
     dispatch(fetchInvoice({ pageNo, invoiceDate, createdDate, listOrder }, navigation));
   }, [pageNo]);
+
+  function callAPI() {
+    dispatch(fetchInvoice({ pageNo, invoiceDate, createdDate, listOrder }, navigation));
+    setShowModal(false);
+  }
 
   const renderItem = ({ item, index }) => (
     <Pressable key={item.invoiceId} onPress={() => navigation.navigate("Invoice Details", { data: item })}>
@@ -72,9 +80,20 @@ const InvoiceList = ({ navigation }) => {
   return (
     <Box flex="1" bgColor="#FFF">
       <Box w="90%" flex="1" alignSelf="center">
-        {/* <Box marginTop="2">
-          <InputText placeholder="Search Invoice" />
-        </Box> */}
+        <HStack marginTop="2" justifyContent="space-between">
+          <Box w="80%">
+            <InputText placeholder="Search Invoice" />
+          </Box>
+          <Pressable
+            onPress={() => setShowModal(true)}
+            borderRadius="5"
+            borderWidth="1"
+            p="2"
+            alignSelf="center"
+          >
+            <Icons.Ionicons name={"filter-outline"} color="#272727" size={30} />
+          </Pressable>
+        </HStack>
 
         <FlashList
           data={store.INVOICE_LIST_DATA}
@@ -91,6 +110,48 @@ const InvoiceList = ({ navigation }) => {
           estimatedItemSize={200}
         />
       </Box>
+
+      {/* FILTER MODAL */}
+
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header>Filter Invoice List</Modal.Header>
+          {/* 
+          fromDate/toDate : represented in YYYY-MM-dd, i.e: 2018-12-20
+          Order by : ASCENDING or DESCENDING,
+          sortBy :  Sort the result,  i.e CREATED_DATE,etc
+          status : Paid
+          keyword : For search, i.e ‘IV1649318870503' <invoiceNumber>
+          */}
+          <Modal.Body>
+            <Text fontWeight={"bold"}>Order by</Text>
+            <HStack my="2" justifyContent="space-between">
+              {listOrderFilter.map((item, index) => {
+                return (
+                  <Button
+                    bg={listOrder === item.order ? "red.500" : "coolGray.500"}
+                    onPress={() => setListOrder(item.order)}
+                  >
+                    <Text color="#FFF">{item.order}</Text>
+                  </Button>
+                );
+              })}
+            </HStack>
+
+            {/* <Text>Sort by</Text>
+            <Text>Date by</Text> */}
+          </Modal.Body>
+          <Modal.Footer justifyContent="space-between">
+            <Button onPress={() => setShowModal(false)} w="48%">
+              <Text color="#FFF">Cancel</Text>
+            </Button>
+            <Button onPress={() => callAPI()} w="48%">
+              <Text color="#FFF">Apply</Text>
+            </Button>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </Box>
   );
 };
