@@ -29,6 +29,10 @@ const InvoiceList = ({ navigation }) => {
     dispatch(fetchInvoice({ pageNo, invoiceDate, createdDate, listOrder }, navigation));
   }, [pageNo]);
 
+  useEffect(() => {
+    setData(store.INVOICE_LIST_DATA)
+  }, [store.INVOICE_LIST_DATA]);
+
   function callAPI() {
     dispatch(fetchInvoice({ pageNo, invoiceDate, createdDate, listOrder }, navigation));
     setShowModal(false);
